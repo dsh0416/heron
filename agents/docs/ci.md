@@ -39,7 +39,8 @@ builds, and tagged releases.
   the Release `published` event. It promotes the staged manifests and dispatches
   the shared Pages workflow from `main`, the branch allowed by the Pages
   environment's deployment policy. The shared workflow also preserves the
-  manifests during ordinary documentation deployments.
+  manifests during ordinary documentation deployments. Staging and promotion
+  share a repository-wide concurrency group so their branch writes are serialized.
 
 ## Workflow tiers
 
