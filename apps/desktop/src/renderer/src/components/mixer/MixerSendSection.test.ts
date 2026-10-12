@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest"
 import { DOMWrapper, enableAutoUnmount, flushPromises, mount } from "@vue/test-utils"
 import type { MixerBusState, MixerChannelState, MixerSendState } from "@heron/contracts"
-import { UiRotaryControl } from "@heron/ui"
+import { UiCascadingSelect, UiRotaryControl } from "@heron/ui"
 import MixerSendSection from "./MixerSendSection.vue"
 
 const channel: MixerChannelState = {
@@ -111,8 +111,8 @@ describe("MixerSendSection", () => {
       document.body.querySelectorAll<HTMLButtonElement>('[role="menuitem"]')
     )
     expect(destinationGroups.map((button) => button.textContent?.trim())).toEqual([
-      "Buses",
-      "Outputs"
+      "Mono",
+      "Stereo"
     ])
     await new DOMWrapper(destinationGroups[1]).trigger("keydown", { key: "ArrowRight" })
     await flushPromises()
@@ -122,8 +122,41 @@ describe("MixerSendSection", () => {
     await new DOMWrapper(outputOption).trigger("click")
     expect(wrapper.emitted("updateSend")?.at(-1)).toEqual([
       "send",
-      { targetChannelId: "output", targetBus: null }
+      { targetChannelId: "output", targetBus: null, targetFormat: "stereo" }
     ])
+  })
+
+  it("shows both BUS lanes and retains the format when retargeting an existing send", async () => {
+    const wrapper = mount(MixerSendSection, {
+      attachTo: document.body,
+      props: {
+        channel,
+        sends: [{ ...send, targetFormat: "stereo" }],
+        buses: [bus],
+        outputs: [output],
+        sendTargets: [{ kind: "bus", bus: 9, format: "stereo" }],
+        slotRows: 1
+      }
+    })
+    await wrapper.get('button[aria-label="Edit send to BUS 7–8"]').trigger("click")
+    await flushPromises()
+    const menu = wrapper
+      .findAllComponents(UiCascadingSelect)
+      .find((candidate) => candidate.props("modelValue") === "stereo:bus:7")!
+    expect(menu.props("groups")![1]!.options).toContainEqual({
+      value: "stereo:bus:7",
+      label: "BUS 7–8"
+    })
+    menu.vm.$emit("update:modelValue", "stereo:bus:9")
+    expect(wrapper.emitted("updateSend")?.at(-1)).toEqual([
+      "send",
+      { targetChannelId: null, targetBus: 9, targetFormat: "stereo" }
+    ])
+    await wrapper.setProps({
+      sends: [{ ...send, targetBus: null, targetChannelId: "output", targetFormat: "mono" }]
+    })
+    expect(wrapper.get('button[aria-label="Edit send to Output 1–2"]').text()).toBe("Output 1–2")
+    expect(menu.props("modelValue")).toBe("mono:output:output")
   })
 
   it("uses Logic position and a stronger ring without redundant row labels", async () => {
@@ -170,7 +203,7 @@ describe("MixerSendSection", () => {
     const routeGroups = Array.from(
       document.body.querySelectorAll<HTMLButtonElement>('[role="menuitem"]')
     )
-    expect(routeGroups.map((button) => button.textContent?.trim())).toEqual(["Buses", "Outputs"])
+    expect(routeGroups.map((button) => button.textContent?.trim())).toEqual(["Mono", "Stereo"])
 
     await new DOMWrapper(routeGroups[0]).trigger("keydown", { key: "ArrowRight" })
     await flushPromises()
@@ -178,19 +211,21 @@ describe("MixerSendSection", () => {
       document.body.querySelectorAll<HTMLButtonElement>('[role="menuitemradio"]')
     ).find((button) => button.textContent?.trim() === "BUS 7")
     await new DOMWrapper(busOption).trigger("click")
-    expect(wrapper.emitted("addSend")?.at(-1)).toEqual([{ kind: "bus", bus: 7 }])
+    expect(wrapper.emitted("addSend")?.at(-1)).toEqual([{ kind: "bus", bus: 7, format: "mono" }])
 
     await wrapper.get('button[aria-label="Add send in empty slot"]').trigger("click")
     await flushPromises()
     const outputGroup = Array.from(
       document.body.querySelectorAll<HTMLButtonElement>('[role="menuitem"]')
-    ).find((button) => button.textContent?.trim() === "Outputs")
+    ).find((button) => button.textContent?.trim() === "Stereo")
     await new DOMWrapper(outputGroup).trigger("keydown", { key: "ArrowRight" })
     await flushPromises()
     const outputOption = Array.from(
       document.body.querySelectorAll<HTMLButtonElement>('[role="menuitemradio"]')
     ).find((button) => button.textContent?.trim() === "Output 1–2")
     await new DOMWrapper(outputOption).trigger("click")
-    expect(wrapper.emitted("addSend")?.at(-1)).toEqual([{ kind: "output", channelId: "output" }])
+    expect(wrapper.emitted("addSend")?.at(-1)).toEqual([
+      { kind: "output", channelId: "output", format: "stereo" }
+    ])
   })
 })

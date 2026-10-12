@@ -67,6 +67,7 @@ pub(crate) fn calculate_presentation_latencies(
                             Vec::new()
                         },
                         output_bus: channel.output_bus,
+                        output_format: channel.output_format,
                         monitored: channel.input_monitoring
                             && (channel.kind == "instrument"
                                 || channel.input_source.as_deref() == Some("hardware")),
@@ -141,38 +142,46 @@ pub(crate) fn calculate_presentation_latencies(
         .map(|_| Vec::new())
         .collect::<Vec<Vec<PresentationEdge>>>();
 
-    let mut add_route = |source: usize,
-                         target_channel_id: Option<&str>,
-                         target_bus: Option<u32>|
-     -> Result<(), String> {
-        match (target_channel_id, target_bus) {
-            (Some(target), None) => {
-                let Some(&target) = channel_indexes.get(target) else {
-                    return Err(format!(
-                        "presentation latency references missing channel `{target}`"
-                    ));
-                };
-                input_edges[target].push(PresentationEdge { source });
-            }
-            (None, Some(bus)) if bus > 0 => {
-                for (target, channel) in graph.channels.iter().enumerate() {
-                    if channel.input_source.as_deref() == Some("bus")
-                        && channel.input_channels.contains(&bus)
+    let mut add_route =
+        |source: usize,
+         target_channel_id: Option<&str>,
+         target_bus: Option<u32>,
+         target_format: Option<heron_dsp_runtime::protocol::CompiledGraphSignalWidth>|
+         -> Result<(), String> {
+            match (target_channel_id, target_bus) {
+                (Some(target), None) => {
+                    let Some(&target) = channel_indexes.get(target) else {
+                        return Err(format!(
+                            "presentation latency references missing channel `{target}`"
+                        ));
+                    };
+                    input_edges[target].push(PresentationEdge { source });
+                }
+                (None, Some(bus)) if bus > 0 => {
+                    for (target, channel) in graph.channels.iter().enumerate() {
+                        if channel.input_source.as_deref() == Some("bus")
+                        && (channel.input_channels.contains(&bus)
+                            || (target_format
+                                == Some(
+                                    heron_dsp_runtime::protocol::CompiledGraphSignalWidth::Stereo,
+                                )
+                                && channel.input_channels.contains(&bus.saturating_add(1))))
                     {
                         input_edges[target].push(PresentationEdge { source });
                     }
+                    }
                 }
+                (None, None) => {}
+                _ => return Err("presentation latency route target is invalid".to_owned()),
             }
-            (None, None) => {}
-            _ => return Err("presentation latency route target is invalid".to_owned()),
-        }
-        Ok(())
-    };
+            Ok(())
+        };
     for (source, channel) in graph.channels.iter().enumerate() {
         add_route(
             source,
             channel.output_channel_id.as_deref(),
             channel.output_bus,
+            channel.output_format,
         )?;
     }
     for send in graph.sends.iter().filter(|send| send.enabled) {
@@ -182,7 +191,12 @@ pub(crate) fn calculate_presentation_latencies(
                 send.source_channel_id
             ));
         };
-        add_route(source, send.target_channel_id.as_deref(), send.target_bus)?;
+        add_route(
+            source,
+            send.target_channel_id.as_deref(),
+            send.target_bus,
+            send.target_format,
+        )?;
     }
 
     let nodes = input_edges
@@ -332,6 +346,7 @@ mod tests {
             soloed: false,
             output_channel_id: output.map(str::to_owned),
             output_bus: None,
+            output_format: None,
             record_armed: false,
             input_monitoring: input_source == Some("hardware"),
             application_capture: None,
@@ -469,6 +484,72 @@ mod tests {
                 output_samples: 20,
             }
         );
+    }
+
+    #[test]
+    fn stereo_bus_right_lane_carries_main_and_send_presentation_latency() {
+        use heron_dsp_runtime::protocol::{CompiledGraphSignalWidth, LiveMixerSend};
+        for via_send in [false, true] {
+            let mut source = channel("source", Some("hardware"), None, false);
+            if !via_send {
+                source.output_bus = Some(1);
+                source.output_format = Some(CompiledGraphSignalWidth::Stereo);
+            }
+            let mut receiver = channel("right", Some("bus"), Some("output"), false);
+            receiver.input_channels = vec![2];
+            let mut graph = graph(
+                vec![source, receiver, channel("output", None, None, true)],
+                vec![
+                    plugin("source-fx", "source", 0, 64),
+                    plugin("right-fx", "right", 0, 32),
+                ],
+            );
+            if via_send {
+                graph.sends.push(LiveMixerSend {
+                    id: "send".to_owned(),
+                    source_channel_id: "source".to_owned(),
+                    target_channel_id: None,
+                    target_bus: Some(1),
+                    target_format: Some(CompiledGraphSignalWidth::Stereo),
+                    enabled: true,
+                    tap: heron_dsp_runtime::protocol::LiveMixerSendTap::PostPan,
+                    level_db: 0.0,
+                });
+            }
+            let latency = calculate_presentation_latencies(&graph, 10, 20).unwrap();
+            assert_eq!(
+                latency["source-fx"],
+                PresentationLatency {
+                    input_samples: 10,
+                    output_samples: 52
+                }
+            );
+            assert_eq!(
+                latency["right-fx"],
+                PresentationLatency {
+                    input_samples: 74,
+                    output_samples: 20
+                }
+            );
+            if !via_send {
+                graph.latency_policy = LiveLatencyPolicy::LowLatency {
+                    target_output_channel_id: "output".to_owned(),
+                    plugin_budget_samples: 0,
+                };
+                let latency = calculate_presentation_latencies(&graph, 10, 20).unwrap();
+                assert_eq!(latency["source-fx"].output_samples, 20);
+                assert_eq!(latency["right-fx"].input_samples, 10);
+            }
+            // A mono route at the same starting BUS must not reach its right neighbour.
+            graph.latency_policy = LiveLatencyPolicy::Normal;
+            graph.channels[0].output_format = Some(CompiledGraphSignalWidth::Mono);
+            if via_send {
+                graph.sends[0].target_format = Some(CompiledGraphSignalWidth::Mono);
+            }
+            let latency = calculate_presentation_latencies(&graph, 10, 20).unwrap();
+            assert_eq!(latency["source-fx"].output_samples, 0);
+            assert_eq!(latency["right-fx"].input_samples, 0);
+        }
     }
 
     #[test]

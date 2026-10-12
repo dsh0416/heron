@@ -45,6 +45,7 @@ describe("MixerOutputSection", () => {
         outputs: [output],
         targets: [
           { kind: "bus", bus: 7 },
+          { kind: "bus", bus: 7, format: "stereo" },
           { kind: "output", channelId: "output" }
         ]
       }
@@ -54,18 +55,53 @@ describe("MixerOutputSection", () => {
     expect(routeMenu.props("appearance")).toBe("workspace")
     expect(routeMenu.props("groups")).toEqual([
       {
-        label: "Buses",
-        options: [{ value: "bus:7", label: "BUS 7" }]
+        label: "Mono",
+        options: [{ value: "mono:bus:7", label: "BUS 7" }]
       },
       {
-        label: "Outputs",
-        options: [{ value: "output:output", label: "Output 1–2" }]
+        label: "Stereo",
+        options: [
+          { value: "stereo:bus:7", label: "BUS 7–8" },
+          { value: "stereo:output:output", label: "Output 1–2" }
+        ]
       }
     ])
 
-    routeMenu.vm.$emit("update:modelValue", "bus:7")
+    routeMenu.vm.$emit("update:modelValue", "mono:bus:7")
     await wrapper.vm.$nextTick()
-    expect(wrapper.emitted("updateChannel")).toEqual([[{ outputChannelId: null, outputBus: 7 }]])
+    expect(wrapper.emitted("updateChannel")).toEqual([
+      [{ outputChannelId: null, outputBus: 7, outputFormat: "mono" }]
+    ])
+    await wrapper.setProps({
+      channel: { ...channel, outputChannelId: null, outputBus: 7, outputFormat: "mono" }
+    })
+    expect(routeMenu.props("modelValue")).toBe("mono:bus:7")
+    routeMenu.vm.$emit("update:modelValue", "stereo:bus:7")
+    expect(wrapper.emitted("updateChannel")?.at(-1)).toEqual([
+      { outputChannelId: null, outputBus: 7, outputFormat: "stereo" }
+    ])
+  })
+
+  it("preserves an explicit mono Output selection when reopening its menu", async () => {
+    const wrapper = mount(MixerOutputSection, {
+      props: {
+        channel: { ...channel, outputChannelId: null, outputBus: 7, outputFormat: "stereo" },
+        buses: [],
+        outputs: [output],
+        targets: [
+          { kind: "bus", bus: 7, format: "stereo" },
+          { kind: "output", channelId: "output", format: "mono" }
+        ]
+      }
+    })
+    const menu = wrapper.getComponent(UiCascadingSelect)
+    expect(menu.props("modelValue")).toBe("stereo:bus:7")
+    menu.vm.$emit("update:modelValue", "mono:output:output")
+    expect(wrapper.emitted("updateChannel")?.at(-1)).toEqual([
+      { outputChannelId: "output", outputBus: null, outputFormat: "mono" }
+    ])
+    await wrapper.setProps({ channel: { ...channel, outputFormat: "mono" } })
+    expect(menu.props("modelValue")).toBe("mono:output:output")
   })
 
   it("uses a lightning icon and success state for the low-latency target", async () => {
