@@ -332,7 +332,9 @@ impl MixerGraph {
     ) -> HardwareOutputFrame {
         self.accumulation.fill([0.0, 0.0]);
         self.bus_accumulation.fill(0.0);
-        simd::copy_stereo_frames_scalar(&mut self.accumulation, channel_sources);
+        for (target, source) in self.accumulation.iter_mut().zip(channel_sources) {
+            *target = *source;
+        }
         self.process_accumulated(processor)
     }
 
@@ -741,14 +743,8 @@ impl MixerGraph {
     }
 
     pub fn write_peaks(&mut self, target: &mut [ChannelPeak]) {
-        let count = target.len().min(self.peaks.len());
-        let (destination_chunks, destination_tail) = target[..count].as_chunks_mut::<8>();
-        let (source_chunks, source_tail) = self.peaks[..count].as_chunks::<8>();
-        for (destination_chunk, source_chunk) in destination_chunks.iter_mut().zip(source_chunks) {
-            *destination_chunk = *source_chunk;
-        }
-        for (destination, source) in destination_tail.iter_mut().zip(source_tail) {
-            *destination = *source;
+        for (target, peak) in target.iter_mut().zip(&self.peaks) {
+            *target = *peak;
         }
         self.peaks.fill(ChannelPeak::default());
     }
