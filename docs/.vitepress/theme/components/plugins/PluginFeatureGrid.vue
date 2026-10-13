@@ -17,7 +17,7 @@ withDefaults(
     imageWidth?: number
     imageHeight?: number
   }>(),
-  { imageWidth: 2080, imageHeight: 1400 }
+  { image: "", imageWidth: 2080, imageHeight: 1400 }
 )
 </script>
 
