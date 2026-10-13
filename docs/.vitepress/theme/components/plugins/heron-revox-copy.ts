@@ -30,7 +30,8 @@ export const revoxCopy = {
     introTitle: "A neural vocoder for vocal work",
     intro:
       "Heron Revox is driven by a neural network vocoder. It helps remove phase problems in vocals and supports pitch shifting up or down with much less loss—especially useful when you build harmonies and other vocal layers.",
-    included: "A Heron plug-in for compatible DAWs. Packaging and download details are still being prepared.",
+    included:
+      "A Heron plug-in for compatible DAWs. Packaging and download details are still being prepared.",
     download: "Download Heron Revox",
     manual: "Read the manual",
     imageAlt: "TODO: Placeholder for a Heron Revox editor screenshot",
@@ -81,7 +82,8 @@ export const revoxCopy = {
     startTitle: "Hear the vocal stack more clearly",
     startBody:
       "When downloads are published, add Heron Revox in a compatible DAW and use it on vocals you plan to pitch, double, or stack into harmonies.",
-    mediaTodo: "Screenshot and audio demo placeholders — replace with final assets before release marketing."
+    mediaTodo:
+      "Screenshot and audio demo placeholders — replace with final assets before release marketing."
   },
   zh: {
     tagline: "叠唱时，也保持清晰",
