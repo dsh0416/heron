@@ -5,7 +5,16 @@ export interface PluginFeatureCard {
   crop: string
 }
 
-defineProps<{ title: string; image: string; features: PluginFeatureCard[] }>()
+withDefaults(
+  defineProps<{
+    title: string
+    image: string
+    features: PluginFeatureCard[]
+    imageWidth?: number
+    imageHeight?: number
+  }>(),
+  { imageWidth: 2080, imageHeight: 1400 }
+)
 </script>
 
 <template>
@@ -14,7 +23,7 @@ defineProps<{ title: string; image: string; features: PluginFeatureCard[] }>()
     <div class="feature-grid">
       <article v-for="feature in features" :key="feature.title" class="feature">
         <svg class="feature-image" :viewBox="feature.crop" aria-hidden="true">
-          <image :href="image" width="2080" height="1400" />
+          <image :href="image" :width="imageWidth" :height="imageHeight" />
         </svg>
         <div class="feature-copy">
           <h3 class="feature-title">{{ feature.title }}</h3>

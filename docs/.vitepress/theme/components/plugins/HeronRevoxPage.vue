@@ -27,8 +27,8 @@ const image = withBase("/plugins/heron-revox.png")
       :included="copy.included"
       :image="image"
       :image-alt="copy.imageAlt"
-      :image-width="2080"
-      :image-height="1400"
+      :image-width="960"
+      :image-height="600"
       :enlarge="copy.enlarge"
       :download-href="downloadHref"
       :download-label="copy.download"
@@ -70,7 +70,13 @@ const image = withBase("/plugins/heron-revox.png")
     </ProductHero>
     <div class="revox-content">
       <p class="revox-media-todo">{{ copy.mediaTodo }}</p>
-      <PluginFeatureGrid :title="copy.featuresTitle" :image="image" :features="copy.features" />
+      <PluginFeatureGrid
+        :title="copy.featuresTitle"
+        :image="image"
+        :features="copy.features"
+        :image-width="960"
+        :image-height="600"
+      />
       <HeronRevoxDetails :copy="copy" />
       <section class="revox-start" aria-labelledby="start-title">
         <div>

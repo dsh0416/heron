@@ -34,24 +34,24 @@ export const revoxCopy = {
       "A Heron plug-in for compatible DAWs. Packaging and download details are still being prepared.",
     download: "Download Heron Revox",
     manual: "Read the manual",
-    imageAlt: "TODO: Placeholder for a Heron Revox editor screenshot",
-    enlarge: "View full-size screenshot (placeholder)",
+    imageAlt: "Heron Revox editor with Semitones and Cents controls",
+    enlarge: "View full-size screenshot",
     featuresTitle: "Built around the vocal take",
     features: [
       {
         title: "Neural network vocoder",
         body: "A vocoder model drives the processing, so the plug-in can reshape vocal material without relying on a conventional phase-locked stack alone.",
-        crop: "260 220 1560 780"
+        crop: "0 0 480 240"
       },
       {
         title: "Clearer stacked vocals",
         body: "Use it when doubled parts, harmonies, or similar layered vocals fight each other from phase problems.",
-        crop: "400 400 1280 640"
+        crop: "120 90 720 360"
       },
       {
         title: "Pitch with less loss",
         body: "Shift a vocal up or down when you need a harmony or register change, with much less of the usual quality loss.",
-        crop: "520 520 1040 560"
+        crop: "0 360 960 240"
       }
     ],
     usesTitle: "Where it fits the session",
@@ -75,7 +75,6 @@ export const revoxCopy = {
       "Help with phase problems in vocal material",
       "Pitch shifting up or down with much less loss",
       "Strong fit for harmonies and similar vocal layers",
-      "TODO: Replace placeholder screenshot and crop previews with final product media",
       "TODO: Add audio demos for before/after and harmony examples",
       "TODO: Expand this list once verified product specifications are available"
     ],
@@ -83,7 +82,7 @@ export const revoxCopy = {
     startBody:
       "When downloads are published, add Heron Revox in a compatible DAW and use it on vocals you plan to pitch, double, or stack into harmonies.",
     mediaTodo:
-      "Screenshot and audio demo placeholders — replace with final assets before release marketing."
+      "TODO: Add audio demos for before/after and harmony examples before release marketing."
   },
   zh: {
     tagline: "叠唱时，也保持清晰",
@@ -93,24 +92,24 @@ export const revoxCopy = {
     included: "Heron 插件，可用于兼容的 DAW。打包与下载细节仍在准备中。",
     download: "下载 Heron Revox",
     manual: "阅读使用手册",
-    imageAlt: "TODO：Heron Revox 编辑器截图占位图",
-    enlarge: "查看完整截图（占位）",
+    imageAlt: "Heron Revox 编辑器，含 Semitones 与 Cents 控件",
+    enlarge: "查看完整截图",
     featuresTitle: "围绕人声素材展开",
     features: [
       {
         title: "神经网络声码器",
         body: "处理由声码器模型驱动，不必只依赖传统的相位锁定叠层方式来重塑人声素材。",
-        crop: "260 220 1560 780"
+        crop: "0 0 480 240"
       },
       {
         title: "更清晰的人声叠层",
         body: "当加倍轨、和声或类似叠层因相位问题互相打架时，可以使用它。",
-        crop: "400 400 1280 640"
+        crop: "120 90 720 360"
       },
       {
         title: "音高变化，损耗更小",
         body: "需要和声或音区变化时上移或下移人声音高，并明显减轻常见的品质损失。",
-        crop: "520 520 1040 560"
+        crop: "0 360 960 240"
       }
     ],
     usesTitle: "适合放进工程的位置",
@@ -134,13 +133,12 @@ export const revoxCopy = {
       "帮助处理人声素材中的相位问题",
       "上移或下移音高，且损耗更小",
       "适合和声与类似的人声叠层",
-      "TODO：用最终产品媒体替换占位截图与裁剪预览",
       "TODO：补充前后对比与和声音频演示",
       "TODO：在核实产品规格后扩展本列表"
     ],
     startTitle: "让人声叠层听得更清楚",
     startBody:
       "下载发布后，在兼容的 DAW 中加载 Heron Revox，用于你计划变调、加倍或叠成和声的人声。",
-    mediaTodo: "截图与音频演示仍为占位，发布营销前请替换为最终资源。"
+    mediaTodo: "TODO：发布营销前补充前后对比与和声音频演示。"
   }
 } satisfies Record<"en" | "zh", RevoxCopy>

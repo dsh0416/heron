@@ -11,7 +11,7 @@ Heron Revox 是一款由神经网络声码器驱动的插件。它可消除人�
 
 功能概览请参阅 [Heron Revox](../heron-revox.md)。
 
-![TODO：Heron Revox 编辑器截图占位图](/plugins/heron-revox.png)
+![Heron Revox 编辑器，含 Semitones 与 Cents 控件](/plugins/heron-revox.png)
 
 ## 开始使用
 
@@ -19,7 +19,7 @@ Heron Revox 是一款由神经网络声码器驱动的插件。它可消除人�
 2. 重新启动 DAW，必要时重新扫描插件目录。
 3. 在人声轨上添加 **Heron Revox** 音频效果，并打开编辑器。
 
-TODO：待产品界面确定后，补充编辑器控件、参数与工作流程说明。请勿将占位截图视为最终产品界面。
+TODO：后续补充更详细的编辑器控件、参数与工作流程说明。
 
 ## 相关页面
 

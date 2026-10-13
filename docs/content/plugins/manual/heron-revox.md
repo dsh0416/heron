@@ -12,7 +12,7 @@ It works especially well for harmonies and similar vocal-layering scenarios.
 
 For the product introduction, see [Heron Revox](../heron-revox.md).
 
-![TODO: Placeholder for a Heron Revox editor screenshot](/plugins/heron-revox.png)
+![Heron Revox editor with Semitones and Cents controls](/plugins/heron-revox.png)
 
 ## Get started
 
@@ -21,8 +21,7 @@ For the product introduction, see [Heron Revox](../heron-revox.md).
 2. Restart your DAW and rescan its plug-in catalog if needed.
 3. Add **Heron Revox** as an audio effect on a vocal track and open its editor.
 
-TODO: Document editor controls, parameters, and workflow once the product UI is
-finalized. Do not treat the placeholder screenshot as final product chrome.
+TODO: Document editor controls, parameters, and workflow in more detail.
 
 ## Related pages
 
