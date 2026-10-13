@@ -80,7 +80,8 @@ fn peak_abs_stereo_scalar(frames: &[StereoFrame], peak: &mut StereoFrame) {
 }
 
 /// Copy channel-major stereo frames with fixed-size chunks.
-pub(super) fn copy_stereo_frames_scalar(destination: &mut [StereoFrame], source: &[StereoFrame]) {
+#[cfg(test)]
+fn copy_stereo_frames_scalar(destination: &mut [StereoFrame], source: &[StereoFrame]) {
     let frame_count = destination.len().min(source.len());
     let (destination, source) = (&mut destination[..frame_count], &source[..frame_count]);
     let (destination_chunks, destination_tail) = destination.as_chunks_mut::<8>();
