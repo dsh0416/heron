@@ -14,12 +14,6 @@ defineProps<{ copy: RevoxCopy }>()
       </div>
     </div>
   </section>
-  <section class="capabilities" aria-labelledby="capabilities-title">
-    <h2 id="capabilities-title" class="section-title">{{ copy.capabilitiesTitle }}</h2>
-    <ul class="capability-list">
-      <li v-for="item in copy.capabilities" :key="item" class="capability">{{ item }}</li>
-    </ul>
-  </section>
 </template>
 
 <style scoped>
@@ -34,7 +28,6 @@ defineProps<{ copy: RevoxCopy }>()
 .uses {
   padding: 54px 0 64px;
   border-top: 1px solid var(--vp-c-divider);
-  border-bottom: 1px solid var(--vp-c-divider);
 }
 .use-grid {
   display: grid;
@@ -54,38 +47,11 @@ defineProps<{ copy: RevoxCopy }>()
   font-size: 15px;
   line-height: 1.8;
 }
-.capabilities {
-  padding: 80px 0;
-}
-.capability-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 72px;
-  row-gap: 18px;
-  margin: 36px 0 0;
-  padding-left: 20px;
-  list-style: disc;
-}
-.capability {
-  padding-left: 6px;
-  color: var(--vp-c-text-2);
-  font-size: 16px;
-  line-height: 1.7;
-}
-.capability::marker {
-  color: var(--vp-c-brand-1);
-}
 @media (max-width: 700px) {
-  .use-grid,
-  .capability-list {
+  .use-grid {
     grid-template-columns: 1fr;
     gap: 24px;
-  }
-  .use-grid {
     margin-top: 32px;
-  }
-  .capabilities {
-    padding: 56px 0;
   }
 }
 </style>

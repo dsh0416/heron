@@ -33,8 +33,6 @@ export interface RevoxCopy {
   accelerationBackendsLabel: string
   accelerationStatusLabel: string
   accelerationRows: RevoxAccelerationRow[]
-  capabilitiesTitle: string
-  capabilities: string[]
   startTitle: string
   startBody: string
   mediaTodo: string
@@ -133,15 +131,6 @@ export const revoxCopy = {
         tone: "planned"
       }
     ],
-    capabilitiesTitle: "What this page covers today",
-    capabilities: [
-      "Neural network vocoder processing for vocals",
-      "Help with phase problems in vocal material",
-      "Pitch shifting up or down with much less loss",
-      "Strong fit for harmonies and similar vocal layers",
-      "TODO: Add audio demos for before/after and harmony examples",
-      "TODO: Expand this list once verified product specifications are available"
-    ],
     startTitle: "Hear the vocal stack more clearly",
     startBody:
       "When downloads are published, add Heron Revox in a compatible DAW and use it on vocals you plan to pitch, double, or stack into harmonies.",
@@ -235,15 +224,6 @@ export const revoxCopy = {
           "与 Linux x64 相同的注册链。需要 CUDA/TensorRT 运行时；硬件验证仍待完成。无 Vulkan EP。",
         tone: "planned"
       }
-    ],
-    capabilitiesTitle: "本页目前写明的内容",
-    capabilities: [
-      "面向人声的神经网络声码器处理",
-      "帮助处理人声素材中的相位问题",
-      "上移或下移音高，且损耗更小",
-      "适合和声与类似的人声叠层",
-      "TODO：补充前后对比与和声音频演示",
-      "TODO：在核实产品规格后扩展本列表"
     ],
     startTitle: "让人声叠层听得更清楚",
     startBody:
