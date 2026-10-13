@@ -4,6 +4,12 @@ Heron uses Criterion for repeatable microbenchmarks of the native mixer, render
 path, media cache, and recorder. These results describe code performance on one
 machine; they are not portable scores and do not run as a pull-request gate.
 
+The mixer pilot uses `fearless_simd` for bus accumulation and peak metering in
+`process_block_with_sources`. Detect `Level` when constructing `MixerGraph`
+(outside the real-time path) and keep scalar parity tests beside the kernels.
+The Criterion `mixer_graph` suite still drives `process_frame`; treat block-path
+wins as complementary to those medians.
+
 For native analysis stages, plug-in preparation, report transport, and chart
 latency, see [Plugin Analysis performance measurements](plugin-analysis-performance.md).
 

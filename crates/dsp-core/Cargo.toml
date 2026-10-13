@@ -8,6 +8,10 @@ license.workspace = true
 [lib]
 path = "src/lib.rs"
 
+[dependencies]
+fearless_simd.workspace = true
+fearless_simd_macros.workspace = true
+
 [lints]
 workspace = true
 

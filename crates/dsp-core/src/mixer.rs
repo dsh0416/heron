@@ -1,5 +1,7 @@
 use std::{collections::VecDeque, error::Error, fmt};
 
+use fearless_simd::Level;
+
 pub type StereoFrame = [f32; 2];
 pub const MAX_BUS_CHANNELS: usize = 256;
 pub const MAX_OUTPUT_CHANNELS: usize = 32;
@@ -133,6 +135,38 @@ impl SmoothedValue {
         }
         self.current
     }
+
+    /// Fills `out` with the same sequence [`Self::next`] would produce.
+    ///
+    /// Settled values fill the block in one write. Ramps still snap to the
+    /// target once the residual drops below the per-sample threshold, then
+    /// fill the remainder without further branching.
+    fn fill_next(&mut self, out: &mut [f32]) {
+        if out.is_empty() {
+            return;
+        }
+        if self.current == self.target {
+            out.fill(self.current);
+            return;
+        }
+
+        let target = self.target;
+        let coefficient = self.coefficient;
+        let mut current = self.current;
+        let mut index = 0;
+        while index < out.len() {
+            current += (target - current) * coefficient;
+            if (current - target).abs() < 1.0e-6 {
+                current = target;
+                out[index..].fill(current);
+                self.current = current;
+                return;
+            }
+            out[index] = current;
+            index += 1;
+        }
+        self.current = current;
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -158,6 +192,10 @@ impl StereoDelay {
     fn set_frames(&mut self, frames: usize) {
         self.frames = vec![[0.0; 2]; frames];
         self.cursor = 0;
+    }
+
+    fn is_empty(&self) -> bool {
+        self.frames.is_empty()
     }
 
     fn process(&mut self, input: StereoFrame) -> StereoFrame {
@@ -196,17 +234,56 @@ pub struct MixerGraph {
     peaks: Vec<ChannelPeak>,
     sends_by_source: Vec<Vec<usize>>,
     master: usize,
+    /// Cached outside the real-time path via [`simd::detect_level`].
+    simd_level: Level,
     block_capacity: usize,
     block_bus_count: usize,
     block_bus_accumulation: Vec<f32>,
     block_master_gains: Vec<f32>,
     block_master_pans: Vec<f32>,
+    block_channel_gains: Vec<f32>,
+    block_channel_pans: Vec<f32>,
+    block_send_gains: Vec<f32>,
     block_post_pan: Vec<StereoFrame>,
+    block_post_fader: Vec<StereoFrame>,
+    block_send_tap: Vec<StereoFrame>,
 }
 
 mod graph;
 mod runtime;
+mod simd;
 #[cfg(test)]
 mod tests;
 
 pub use graph::{balance_stereo, pan_mono};
+
+#[cfg(test)]
+mod smoothed_tests {
+    use super::SmoothedValue;
+
+    #[test]
+    fn fill_next_matches_per_sample_next() {
+        let mut per_sample = SmoothedValue::new(1.0, 1_000);
+        let mut block_wise = SmoothedValue::new(1.0, 1_000);
+        per_sample.set_target(0.0);
+        block_wise.set_target(0.0);
+
+        let mut expected = [0.0; 32];
+        for sample in &mut expected {
+            *sample = per_sample.next();
+        }
+        let mut actual = [0.0; 32];
+        block_wise.fill_next(&mut actual);
+        for (actual_sample, expected_sample) in actual.iter().zip(expected) {
+            assert!((actual_sample - expected_sample).abs() < 1.0e-7);
+        }
+
+        let mut settled_expected = [0.0; 16];
+        for sample in &mut settled_expected {
+            *sample = per_sample.next();
+        }
+        let mut settled_actual = [0.0; 16];
+        block_wise.fill_next(&mut settled_actual);
+        assert_eq!(settled_actual, settled_expected);
+    }
+}
