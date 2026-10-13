@@ -2,14 +2,18 @@
 export interface PluginFeatureCard {
   title: string
   body: string
-  crop: string
+  /** SVG viewBox crop into the shared `image` (EQ-style). */
+  crop?: string
+  /** Dedicated illustration for this card (Revox-style). */
+  media?: string
+  mediaAlt?: string
 }
 
 withDefaults(
   defineProps<{
     title: string
-    image: string
     features: PluginFeatureCard[]
+    image?: string
     imageWidth?: number
     imageHeight?: number
   }>(),
@@ -22,7 +26,19 @@ withDefaults(
     <h2 id="features-title" class="section-title">{{ title }}</h2>
     <div class="feature-grid">
       <article v-for="feature in features" :key="feature.title" class="feature">
-        <svg class="feature-image" :viewBox="feature.crop" aria-hidden="true">
+        <img
+          v-if="feature.media"
+          class="feature-image feature-image-media"
+          :src="feature.media"
+          :alt="feature.mediaAlt || ''"
+          loading="lazy"
+        />
+        <svg
+          v-else-if="feature.crop && image"
+          class="feature-image"
+          :viewBox="feature.crop"
+          aria-hidden="true"
+        >
           <image :href="image" :width="imageWidth" :height="imageHeight" />
         </svg>
         <div class="feature-copy">
@@ -61,6 +77,10 @@ withDefaults(
   width: 100%;
   aspect-ratio: 2;
   background: #242426;
+}
+.feature-image-media {
+  object-fit: cover;
+  object-position: center;
 }
 .feature-copy {
   padding: 28px;

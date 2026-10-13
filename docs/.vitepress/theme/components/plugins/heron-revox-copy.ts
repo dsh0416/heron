@@ -1,7 +1,9 @@
 export interface RevoxFeature {
   title: string
   body: string
-  crop: string
+  /** Public path under /plugins/, resolved with withBase by the page. */
+  media: string
+  mediaAlt: string
 }
 
 export interface RevoxCopy {
@@ -41,17 +43,21 @@ export const revoxCopy = {
       {
         title: "Neural network vocoder",
         body: "A vocoder model drives the processing, so the plug-in can reshape vocal material without relying on a conventional phase-locked stack alone.",
-        crop: "0 0 480 240"
+        media: "/plugins/heron-revox-pipeline.svg",
+        mediaAlt:
+          "Pipeline from vocal input through FCPE pitch and features to neural vocoder resynthesis and output"
       },
       {
         title: "Clearer stacked vocals",
         body: "Use it when doubled parts, harmonies, or similar layered vocals fight each other from phase problems.",
-        crop: "120 90 720 360"
+        media: "/plugins/heron-revox-mel.png",
+        mediaAlt: "Mel spectrogram of a synthetic vocal take beside a pitch-shifted harmony stack"
       },
       {
-        title: "Pitch with less loss",
-        body: "Shift a vocal up or down when you need a harmony or register change, with much less of the usual quality loss.",
-        crop: "0 360 960 240"
+        title: "Phase that stays coherent",
+        body: "Reduce phase problems that show up when vocal takes sit on top of each other, so layered parts sum instead of cancel.",
+        media: "/plugins/heron-revox-phase.png",
+        mediaAlt: "Waveform comparison of phase conflict versus aligned summed vocals"
       }
     ],
     usesTitle: "Where it fits the session",
@@ -99,17 +105,20 @@ export const revoxCopy = {
       {
         title: "神经网络声码器",
         body: "处理由声码器模型驱动，不必只依赖传统的相位锁定叠层方式来重塑人声素材。",
-        crop: "0 0 480 240"
+        media: "/plugins/heron-revox-pipeline.svg",
+        mediaAlt: "从人声输入经 FCPE 音高与特征估计，到神经网络声码器重合成并输出的流程"
       },
       {
         title: "更清晰的人声叠层",
         body: "当加倍轨、和声或类似叠层因相位问题互相打架时，可以使用它。",
-        crop: "120 90 720 360"
+        media: "/plugins/heron-revox-mel.png",
+        mediaAlt: "合成人声原轨与变调和声叠层的梅尔频谱对比"
       },
       {
-        title: "音高变化，损耗更小",
-        body: "需要和声或音区变化时上移或下移人声音高，并明显减轻常见的品质损失。",
-        crop: "0 360 960 240"
+        title: "相位保持一致",
+        body: "减轻多条人声叠在一起时出现的相位问题，让叠层相加而不是互相抵消。",
+        media: "/plugins/heron-revox-phase.png",
+        mediaAlt: "相位冲突与对齐后相加的波形对比"
       }
     ],
     usesTitle: "适合放进工程的位置",

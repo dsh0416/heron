@@ -15,6 +15,15 @@ const prefix = computed(() => (locale.value === "zh" ? "/zh" : ""))
 const downloadHref = computed(() => withBase(`${prefix.value}/plugins/releases`))
 const manualHref = computed(() => withBase(`${prefix.value}/plugins/manual/heron-revox`))
 const image = withBase("/plugins/heron-revox.png")
+const heroBackground = withBase("/plugins/heron-revox-hero-bg.png")
+const features = computed(() =>
+  copy.value.features.map((feature) => ({
+    title: feature.title,
+    body: feature.body,
+    media: withBase(feature.media),
+    mediaAlt: feature.mediaAlt
+  }))
+)
 </script>
 
 <template>
@@ -36,33 +45,10 @@ const image = withBase("/plugins/heron-revox.png")
       :manual-label="copy.manual"
     >
       <template #background>
-        <svg class="voice-art" viewBox="0 0 1440 440" fill="none" aria-hidden="true">
-          <path
-            d="M0 330H1440M0 220H1440M0 110H1440M240 0V440M480 0V440M720 0V440M960 0V440M1200 0V440"
-            stroke="currentColor"
-            opacity=".07"
-          />
-          <path
-            d="M-40 250C80 250 120 180 180 180S280 320 360 300S470 140 560 170S680 330 780 290S920 120 1040 160S1180 310 1280 250S1400 160 1500 180"
-            stroke="#a98ade"
-            stroke-width="2"
-            opacity=".55"
-          />
-          <path
-            d="M-40 250C100 250 150 210 220 210S330 290 420 270S540 160 640 190S780 320 900 280S1060 140 1180 180S1320 300 1500 220"
-            stroke="#72c3c7"
-            stroke-width="2"
-            opacity=".7"
-          />
-          <path
-            d="M-40 250C90 250 140 230 200 230S300 270 390 255S510 190 610 210S760 300 880 265S1040 160 1160 195S1300 285 1500 230"
-            stroke="#e5d899"
-            stroke-width="4"
-          />
-          <circle cx="200" cy="230" r="7" fill="#a98ade" stroke="#171a1f" stroke-width="3" />
-          <circle cx="610" cy="210" r="7" fill="#72c3c7" stroke="#171a1f" stroke-width="3" />
-          <circle cx="1160" cy="195" r="7" fill="#e5d899" stroke="#171a1f" stroke-width="3" />
-        </svg>
+        <div class="revox-hero-bg" aria-hidden="true">
+          <img class="revox-hero-bg-image" :src="heroBackground" alt="" />
+          <div class="revox-hero-bg-fade" />
+        </div>
       </template>
       <template #support>
         <PluginCompatibility class="revox-support" :locale="locale" compact />
@@ -70,13 +56,7 @@ const image = withBase("/plugins/heron-revox.png")
     </ProductHero>
     <div class="revox-content">
       <p class="revox-media-todo">{{ copy.mediaTodo }}</p>
-      <PluginFeatureGrid
-        :title="copy.featuresTitle"
-        :image="image"
-        :features="copy.features"
-        :image-width="960"
-        :image-height="600"
-      />
+      <PluginFeatureGrid :title="copy.featuresTitle" :features="features" />
       <HeronRevoxDetails :copy="copy" />
       <section class="revox-start" aria-labelledby="start-title">
         <div>
@@ -94,15 +74,28 @@ const image = withBase("/plugins/heron-revox.png")
 .revox-page {
   color: var(--vp-c-text-1);
 }
-.voice-art {
+.revox-hero-bg {
   position: absolute;
-  top: -64px;
+  inset: 0;
+  overflow: hidden;
+}
+.revox-hero-bg-image {
+  position: absolute;
+  top: -8%;
   left: 0;
   width: 100%;
-  min-width: 1000px;
-  height: 410px;
-  opacity: 0.75;
-  mask-image: linear-gradient(#000 45%, transparent 96%);
+  min-width: 1100px;
+  height: 118%;
+  object-fit: cover;
+  object-position: center 42%;
+  opacity: 0.55;
+  filter: saturate(0.92) contrast(1.05);
+  mask-image: linear-gradient(#000 42%, transparent 96%);
+}
+.revox-hero-bg-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(23 26 31 / 28%), rgb(23 26 31 / 78%) 72%);
 }
 .revox-support {
   justify-content: center;
@@ -174,9 +167,9 @@ const image = withBase("/plugins/heron-revox.png")
   .revox-content {
     width: calc(100% - 40px);
   }
-  .voice-art {
-    left: -210px;
-    top: -120px;
+  .revox-hero-bg-image {
+    left: -18%;
+    min-width: 140%;
   }
 }
 </style>

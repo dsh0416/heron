@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 520" role="img" aria-label="Heron Revox neural vocoder pipeline">
+  <rect width="1040" height="520" fill="#171a1f"/>
+  <defs>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a98ade" stop-opacity=".35"/>
+      <stop offset="50%" stop-color="#72c3c7" stop-opacity=".55"/>
+      <stop offset="100%" stop-color="#e5d899" stop-opacity=".45"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#8b919a"/>
+    </marker>
+  </defs>
+
+  <!-- soft grid -->
+  <g stroke="#2a2d33" stroke-width="1">
+    <path d="M0 130H1040M0 260H1040M0 390H1040"/>
+    <path d="M208 0V520M416 0V520M624 0V520M832 0V520"/>
+  </g>
+
+  <!-- flow ribbon -->
+  <path d="M70 260C180 260 210 260 280 260S390 210 470 210S560 310 640 310S760 220 860 220S960 260 990 260"
+        fill="none" stroke="url(#flow)" stroke-width="18" stroke-linecap="round" opacity=".9"/>
+
+  <!-- nodes -->
+  <g font-family="ui-sans-serif, system-ui, sans-serif">
+    <!-- Vocal input -->
+    <rect x="48" y="188" width="168" height="144" rx="12" fill="#242426" stroke="#48494c"/>
+    <circle cx="132" cy="236" r="18" fill="none" stroke="#a98ade" stroke-width="3"/>
+    <path d="M118 236h28M132 222v28" stroke="#a98ade" stroke-width="3" stroke-linecap="round"/>
+    <text x="132" y="286" text-anchor="middle" fill="#eef0f2" font-size="18" font-weight="600">Vocal input</text>
+    <text x="132" y="310" text-anchor="middle" fill="#8b919a" font-size="13">source take</text>
+
+    <!-- FCPE -->
+    <rect x="292" y="188" width="196" height="144" rx="12" fill="#242426" stroke="#48494c"/>
+    <rect x="318" y="214" width="144" height="36" rx="8" fill="#2c2540" stroke="#a98ade"/>
+    <text x="390" y="238" text-anchor="middle" fill="#cbb6ef" font-size="14" font-weight="600">FCPE</text>
+    <text x="390" y="286" text-anchor="middle" fill="#eef0f2" font-size="18" font-weight="600">Pitch / features</text>
+    <text x="390" y="310" text-anchor="middle" fill="#8b919a" font-size="13">estimate &amp; encode</text>
+
+    <!-- Vocoder -->
+    <rect x="560" y="188" width="196" height="144" rx="12" fill="#242426" stroke="#48494c"/>
+    <path d="M596 232h124M596 248h98M596 264h112" stroke="#72c3c7" stroke-width="3" stroke-linecap="round"/>
+    <text x="658" y="286" text-anchor="middle" fill="#eef0f2" font-size="18" font-weight="600">Neural vocoder</text>
+    <text x="658" y="310" text-anchor="middle" fill="#8b919a" font-size="13">resynthesis</text>
+
+    <!-- Output -->
+    <rect x="824" y="188" width="168" height="144" rx="12" fill="#242426" stroke="#48494c"/>
+    <path d="M868 220c28 0 48 18 48 40s-20 40-48 40" fill="none" stroke="#e5d899" stroke-width="3"/>
+    <path d="M892 236c14 0 24 10 24 24s-10 24-24 24" fill="none" stroke="#e5d899" stroke-width="3"/>
+    <circle cx="868" cy="260" r="5" fill="#e5d899"/>
+    <text x="908" y="286" text-anchor="middle" fill="#eef0f2" font-size="18" font-weight="600">Output</text>
+    <text x="908" y="310" text-anchor="middle" fill="#8b919a" font-size="13">shifted vocal</text>
+  </g>
+
+  <!-- arrows between cards -->
+  <g fill="none" stroke="#8b919a" stroke-width="2" marker-end="url(#arrow)">
+    <path d="M216 260H292"/>
+    <path d="M488 260H560"/>
+    <path d="M756 260H824"/>
+  </g>
+</svg>
