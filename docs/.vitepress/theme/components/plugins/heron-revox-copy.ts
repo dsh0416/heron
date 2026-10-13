@@ -6,11 +6,11 @@ export interface RevoxFeature {
   mediaAlt: string
 }
 
+export type RevoxAccelerationCell = "ready" | "experimental" | "none"
+
 export interface RevoxAccelerationRow {
   platform: string
-  backends: string
-  status: string
-  tone: "ready" | "limited" | "planned"
+  cells: RevoxAccelerationCell[]
 }
 
 export interface RevoxCopy {
@@ -27,16 +27,43 @@ export interface RevoxCopy {
   usesTitle: string
   uses: { name: string; body: string }[]
   accelerationTitle: string
-  accelerationIntro: string
-  accelerationNote: string
+  accelerationSubtitle: string
   accelerationPlatformLabel: string
-  accelerationBackendsLabel: string
-  accelerationStatusLabel: string
+  accelerationBackends: string[]
   accelerationRows: RevoxAccelerationRow[]
+  accelerationLegendReady: string
+  accelerationLegendExperimental: string
+  accelerationLegendNone: string
   startTitle: string
   startBody: string
   mediaTodo: string
 }
+
+/** Backend columns: CoreML, WebGPU, TensorRT, CUDA, DirectML, CPU */
+const accelerationBackends = ["CoreML", "WebGPU", "TensorRT", "CUDA", "DirectML", "CPU"]
+
+const accelerationRows: RevoxAccelerationRow[] = [
+  {
+    platform: "macOS · Apple Silicon",
+    cells: ["ready", "experimental", "none", "none", "none", "ready"]
+  },
+  {
+    platform: "macOS · Intel",
+    cells: ["none", "none", "none", "none", "none", "ready"]
+  },
+  {
+    platform: "Windows · x64",
+    cells: ["none", "none", "experimental", "experimental", "experimental", "ready"]
+  },
+  {
+    platform: "Linux · x64",
+    cells: ["none", "none", "experimental", "experimental", "none", "ready"]
+  },
+  {
+    platform: "Linux · arm64",
+    cells: ["none", "none", "experimental", "experimental", "none", "ready"]
+  }
+]
 
 export const revoxCopy = {
   en: {
@@ -87,50 +114,13 @@ export const revoxCopy = {
       }
     ],
     accelerationTitle: "GPU acceleration by platform",
-    accelerationIntro:
-      "Revox runs ONNX Runtime with an ordered execution-provider chain. Available GPU backends register first; CPU remains the final fallback. There is no manual backend selector.",
-    accelerationNote:
-      "A registered provider does not prove every operator runs on the GPU. WebGPU uses Dawn and remains experimental upstream. CUDA and TensorRT builds need matching NVIDIA runtimes (CUDA 13.2+ / cuDNN 9.23+ for the current ORT package).",
+    accelerationSubtitle: "ONNX Runtime execution providers compiled into each package.",
     accelerationPlatformLabel: "Platform",
-    accelerationBackendsLabel: "Backends (priority order)",
-    accelerationStatusLabel: "Status",
-    accelerationRows: [
-      {
-        platform: "macOS · Apple Silicon",
-        backends: "CoreML → WebGPU → CPU",
-        status:
-          "Supported. CoreML is the primary path and has been exercised on Apple Silicon; WebGPU is experimental.",
-        tone: "ready"
-      },
-      {
-        platform: "macOS · Intel",
-        backends: "CoreML → WebGPU → CPU (when ORT is supplied)",
-        status:
-          "No pinned ORT rc.14 prebuilt for Intel macOS. Ship as CPU-only unless an external ORT build is provided through ORT_LIB_PATH.",
-        tone: "limited"
-      },
-      {
-        platform: "Windows · x64",
-        backends: "TensorRT RTX → TensorRT → CUDA → DirectML → CPU",
-        status:
-          "Compiled into the Windows x64 package. GPU backends need matching drivers/runtimes; hardware validation is still outstanding.",
-        tone: "planned"
-      },
-      {
-        platform: "Linux · x64",
-        backends: "TensorRT RTX → TensorRT → CUDA → CPU",
-        status:
-          "Compiled into the Linux x64 package. Needs CUDA/TensorRT runtimes; hardware validation is still outstanding. No Vulkan EP.",
-        tone: "planned"
-      },
-      {
-        platform: "Linux · arm64",
-        backends: "TensorRT RTX → TensorRT → CUDA → CPU",
-        status:
-          "Same registration chain as Linux x64. Needs CUDA/TensorRT runtimes; hardware validation is still outstanding. No Vulkan EP.",
-        tone: "planned"
-      }
-    ],
+    accelerationBackends,
+    accelerationRows,
+    accelerationLegendReady: "Supported",
+    accelerationLegendExperimental: "Experimental",
+    accelerationLegendNone: "Not available",
     startTitle: "Hear the vocal stack more clearly",
     startBody:
       "When downloads are published, add Heron Revox in a compatible DAW and use it on vocals you plan to pitch, double, or stack into harmonies.",
@@ -184,47 +174,13 @@ export const revoxCopy = {
       }
     ],
     accelerationTitle: "各平台 GPU 加速支持",
-    accelerationIntro:
-      "Revox 通过 ONNX Runtime 按固定优先级注册执行提供程序。可用的 GPU 后端会先注册，CPU 始终作为最终回退。没有手动后端选择器。",
-    accelerationNote:
-      "“已注册”并不代表每个算子都在 GPU 上运行。WebGPU 使用 Dawn，上游仍属实验性质。CUDA 与 TensorRT 构建需要匹配的 NVIDIA 运行时（当前 ORT 包要求 CUDA 13.2+ / cuDNN 9.23+）。",
+    accelerationSubtitle: "各安装包中编译的 ONNX Runtime 执行提供程序。",
     accelerationPlatformLabel: "平台",
-    accelerationBackendsLabel: "后端（优先级）",
-    accelerationStatusLabel: "状态",
-    accelerationRows: [
-      {
-        platform: "macOS · Apple Silicon",
-        backends: "CoreML → WebGPU → CPU",
-        status: "已支持。CoreML 为主要路径，并已在 Apple Silicon 上验证；WebGPU 仍属实验性质。",
-        tone: "ready"
-      },
-      {
-        platform: "macOS · Intel",
-        backends: "CoreML → WebGPU → CPU（需自行提供 ORT）",
-        status:
-          "Intel macOS 没有固定的 ORT rc.14 预构建包。默认按仅 CPU 交付；若通过 ORT_LIB_PATH 提供外部 ORT，则可启用上述链。",
-        tone: "limited"
-      },
-      {
-        platform: "Windows · x64",
-        backends: "TensorRT RTX → TensorRT → CUDA → DirectML → CPU",
-        status: "已编入 Windows x64 包。GPU 后端依赖相应驱动/运行时；硬件验证仍待完成。",
-        tone: "planned"
-      },
-      {
-        platform: "Linux · x64",
-        backends: "TensorRT RTX → TensorRT → CUDA → CPU",
-        status: "已编入 Linux x64 包。需要 CUDA/TensorRT 运行时；硬件验证仍待完成。无 Vulkan EP。",
-        tone: "planned"
-      },
-      {
-        platform: "Linux · arm64",
-        backends: "TensorRT RTX → TensorRT → CUDA → CPU",
-        status:
-          "与 Linux x64 相同的注册链。需要 CUDA/TensorRT 运行时；硬件验证仍待完成。无 Vulkan EP。",
-        tone: "planned"
-      }
-    ],
+    accelerationBackends,
+    accelerationRows,
+    accelerationLegendReady: "已支持",
+    accelerationLegendExperimental: "实验性质",
+    accelerationLegendNone: "不可用",
     startTitle: "让人声叠层听得更清楚",
     startBody:
       "下载发布后，在兼容的 DAW 中加载 Heron Revox，用于你计划变调、加倍或叠成和声的人声。",

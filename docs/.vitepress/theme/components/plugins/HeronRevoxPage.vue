@@ -61,12 +61,13 @@ const features = computed(() =>
       <HeronRevoxDetails :copy="copy" />
       <RevoxAcceleration
         :title="copy.accelerationTitle"
-        :intro="copy.accelerationIntro"
-        :note="copy.accelerationNote"
+        :subtitle="copy.accelerationSubtitle"
         :platform-label="copy.accelerationPlatformLabel"
-        :backends-label="copy.accelerationBackendsLabel"
-        :status-label="copy.accelerationStatusLabel"
+        :backends="copy.accelerationBackends"
         :rows="copy.accelerationRows"
+        :legend-ready="copy.accelerationLegendReady"
+        :legend-experimental="copy.accelerationLegendExperimental"
+        :legend-none="copy.accelerationLegendNone"
       />
       <section class="revox-start" aria-labelledby="start-title">
         <div>
