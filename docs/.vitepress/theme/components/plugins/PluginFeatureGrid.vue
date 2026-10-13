@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import type { EqFeature } from "./heron-eq-copy"
+export interface PluginFeatureCard {
+  title: string
+  body: string
+  crop: string
+}
 
-defineProps<{ title: string; image: string; features: EqFeature[] }>()
+defineProps<{ title: string; image: string; features: PluginFeatureCard[] }>()
 </script>
 
 <template>
