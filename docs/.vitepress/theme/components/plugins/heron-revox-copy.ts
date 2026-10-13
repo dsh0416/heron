@@ -43,9 +43,8 @@ export const revoxCopy = {
       {
         title: "Neural network vocoder",
         body: "A vocoder model drives the processing, so the plug-in can reshape vocal material without relying on a conventional phase-locked stack alone.",
-        media: "/plugins/heron-revox-pipeline.svg",
-        mediaAlt:
-          "Pipeline from vocal input through FCPE pitch and features to neural vocoder resynthesis and output"
+        media: "/plugins/heron-revox-network.svg",
+        mediaAlt: "Abstract neural network with layered nodes and soft connections"
       },
       {
         title: "Clearer stacked vocals",
@@ -105,8 +104,8 @@ export const revoxCopy = {
       {
         title: "神经网络声码器",
         body: "处理由声码器模型驱动，不必只依赖传统的相位锁定叠层方式来重塑人声素材。",
-        media: "/plugins/heron-revox-pipeline.svg",
-        mediaAlt: "从人声输入经 FCPE 音高与特征估计，到神经网络声码器重合成并输出的流程"
+        media: "/plugins/heron-revox-network.svg",
+        mediaAlt: "抽象神经网络示意：多层节点与柔和连线"
       },
       {
         title: "更清晰的人声叠层",
