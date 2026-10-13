@@ -6,6 +6,7 @@ import HeronRevoxDetails from "./HeronRevoxDetails.vue"
 import PluginFeatureGrid from "./PluginFeatureGrid.vue"
 import PluginCompatibility from "./PluginCompatibility.vue"
 import ProductHero from "../product/ProductHero.vue"
+import RevoxAcceleration from "./RevoxAcceleration.vue"
 import { revoxCopy } from "./heron-revox-copy"
 
 const { localeIndex } = useData()
@@ -58,6 +59,15 @@ const features = computed(() =>
       <p class="revox-media-todo">{{ copy.mediaTodo }}</p>
       <PluginFeatureGrid :title="copy.featuresTitle" :features="features" />
       <HeronRevoxDetails :copy="copy" />
+      <RevoxAcceleration
+        :title="copy.accelerationTitle"
+        :intro="copy.accelerationIntro"
+        :note="copy.accelerationNote"
+        :platform-label="copy.accelerationPlatformLabel"
+        :backends-label="copy.accelerationBackendsLabel"
+        :status-label="copy.accelerationStatusLabel"
+        :rows="copy.accelerationRows"
+      />
       <section class="revox-start" aria-labelledby="start-title">
         <div>
           <h2 id="start-title" class="revox-start-title">{{ copy.startTitle }}</h2>

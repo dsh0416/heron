@@ -6,6 +6,13 @@ export interface RevoxFeature {
   mediaAlt: string
 }
 
+export interface RevoxAccelerationRow {
+  platform: string
+  backends: string
+  status: string
+  tone: "ready" | "limited" | "planned"
+}
+
 export interface RevoxCopy {
   tagline: string
   introTitle: string
@@ -19,6 +26,13 @@ export interface RevoxCopy {
   features: RevoxFeature[]
   usesTitle: string
   uses: { name: string; body: string }[]
+  accelerationTitle: string
+  accelerationIntro: string
+  accelerationNote: string
+  accelerationPlatformLabel: string
+  accelerationBackendsLabel: string
+  accelerationStatusLabel: string
+  accelerationRows: RevoxAccelerationRow[]
   capabilitiesTitle: string
   capabilities: string[]
   startTitle: string
@@ -72,6 +86,50 @@ export const revoxCopy = {
       {
         name: "Harmonies and layers",
         body: "Especially useful for harmonies and other vocal-layering scenarios."
+      }
+    ],
+    accelerationTitle: "GPU acceleration by platform",
+    accelerationIntro:
+      "Revox runs ONNX Runtime with an ordered execution-provider chain. Available GPU backends register first; CPU remains the final fallback. There is no manual backend selector.",
+    accelerationNote:
+      "A registered provider does not prove every operator runs on the GPU. WebGPU uses Dawn and remains experimental upstream. CUDA and TensorRT builds need matching NVIDIA runtimes (CUDA 13.2+ / cuDNN 9.23+ for the current ORT package).",
+    accelerationPlatformLabel: "Platform",
+    accelerationBackendsLabel: "Backends (priority order)",
+    accelerationStatusLabel: "Status",
+    accelerationRows: [
+      {
+        platform: "macOS · Apple Silicon",
+        backends: "CoreML → WebGPU → CPU",
+        status: "Supported. CoreML is the primary path and has been exercised on Apple Silicon; WebGPU is experimental.",
+        tone: "ready"
+      },
+      {
+        platform: "macOS · Intel",
+        backends: "CoreML → WebGPU → CPU (when ORT is supplied)",
+        status:
+          "No pinned ORT rc.14 prebuilt for Intel macOS. Ship as CPU-only unless an external ORT build is provided through ORT_LIB_PATH.",
+        tone: "limited"
+      },
+      {
+        platform: "Windows · x64",
+        backends: "TensorRT RTX → TensorRT → CUDA → DirectML → CPU",
+        status:
+          "Compiled into the Windows x64 package. GPU backends need matching drivers/runtimes; hardware validation is still outstanding.",
+        tone: "planned"
+      },
+      {
+        platform: "Linux · x64",
+        backends: "TensorRT RTX → TensorRT → CUDA → CPU",
+        status:
+          "Compiled into the Linux x64 package. Needs CUDA/TensorRT runtimes; hardware validation is still outstanding. No Vulkan EP.",
+        tone: "planned"
+      },
+      {
+        platform: "Linux · arm64",
+        backends: "TensorRT RTX → TensorRT → CUDA → CPU",
+        status:
+          "Same registration chain as Linux x64. Needs CUDA/TensorRT runtimes; hardware validation is still outstanding. No Vulkan EP.",
+        tone: "planned"
       }
     ],
     capabilitiesTitle: "What this page covers today",
@@ -133,6 +191,47 @@ export const revoxCopy = {
       {
         name: "和声与叠层",
         body: "尤其适合和声与其他人声叠层场景。"
+      }
+    ],
+    accelerationTitle: "各平台 GPU 加速支持",
+    accelerationIntro:
+      "Revox 通过 ONNX Runtime 按固定优先级注册执行提供程序。可用的 GPU 后端会先注册，CPU 始终作为最终回退。没有手动后端选择器。",
+    accelerationNote:
+      "“已注册”并不代表每个算子都在 GPU 上运行。WebGPU 使用 Dawn，上游仍属实验性质。CUDA 与 TensorRT 构建需要匹配的 NVIDIA 运行时（当前 ORT 包要求 CUDA 13.2+ / cuDNN 9.23+）。",
+    accelerationPlatformLabel: "平台",
+    accelerationBackendsLabel: "后端（优先级）",
+    accelerationStatusLabel: "状态",
+    accelerationRows: [
+      {
+        platform: "macOS · Apple Silicon",
+        backends: "CoreML → WebGPU → CPU",
+        status: "已支持。CoreML 为主要路径，并已在 Apple Silicon 上验证；WebGPU 仍属实验性质。",
+        tone: "ready"
+      },
+      {
+        platform: "macOS · Intel",
+        backends: "CoreML → WebGPU → CPU（需自行提供 ORT）",
+        status:
+          "Intel macOS 没有固定的 ORT rc.14 预构建包。默认按仅 CPU 交付；若通过 ORT_LIB_PATH 提供外部 ORT，则可启用上述链。",
+        tone: "limited"
+      },
+      {
+        platform: "Windows · x64",
+        backends: "TensorRT RTX → TensorRT → CUDA → DirectML → CPU",
+        status: "已编入 Windows x64 包。GPU 后端依赖相应驱动/运行时；硬件验证仍待完成。",
+        tone: "planned"
+      },
+      {
+        platform: "Linux · x64",
+        backends: "TensorRT RTX → TensorRT → CUDA → CPU",
+        status: "已编入 Linux x64 包。需要 CUDA/TensorRT 运行时；硬件验证仍待完成。无 Vulkan EP。",
+        tone: "planned"
+      },
+      {
+        platform: "Linux · arm64",
+        backends: "TensorRT RTX → TensorRT → CUDA → CPU",
+        status: "与 Linux x64 相同的注册链。需要 CUDA/TensorRT 运行时；硬件验证仍待完成。无 Vulkan EP。",
+        tone: "planned"
       }
     ],
     capabilitiesTitle: "本页目前写明的内容",
