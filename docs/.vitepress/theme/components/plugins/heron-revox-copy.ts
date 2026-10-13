@@ -100,7 +100,8 @@ export const revoxCopy = {
       {
         platform: "macOS · Apple Silicon",
         backends: "CoreML → WebGPU → CPU",
-        status: "Supported. CoreML is the primary path and has been exercised on Apple Silicon; WebGPU is experimental.",
+        status:
+          "Supported. CoreML is the primary path and has been exercised on Apple Silicon; WebGPU is experimental.",
         tone: "ready"
       },
       {
@@ -230,7 +231,8 @@ export const revoxCopy = {
       {
         platform: "Linux · arm64",
         backends: "TensorRT RTX → TensorRT → CUDA → CPU",
-        status: "与 Linux x64 相同的注册链。需要 CUDA/TensorRT 运行时；硬件验证仍待完成。无 Vulkan EP。",
+        status:
+          "与 Linux x64 相同的注册链。需要 CUDA/TensorRT 运行时；硬件验证仍待完成。无 Vulkan EP。",
         tone: "planned"
       }
     ],

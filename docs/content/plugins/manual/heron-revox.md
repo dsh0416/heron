@@ -31,13 +31,13 @@ backend selector. Status below reflects what the
 [heron-plugins](https://github.com/minori-live/heron-plugins) code compiles and
 registers today—not a claim that every operator runs on the GPU.
 
-| Platform | Backends (priority order) | Status |
-| --- | --- | --- |
-| macOS · Apple Silicon | CoreML → WebGPU → CPU | Supported. CoreML is the primary path and has been exercised on Apple Silicon; WebGPU is experimental. |
-| macOS · Intel | CoreML → WebGPU → CPU (when ORT is supplied) | No pinned ORT rc.14 prebuilt for Intel macOS. Ship as CPU-only unless an external ORT build is provided through `ORT_LIB_PATH`. |
-| Windows · x64 | TensorRT RTX → TensorRT → CUDA → DirectML → CPU | Compiled into the Windows x64 package. GPU backends need matching drivers/runtimes; hardware validation is still outstanding. |
-| Linux · x64 | TensorRT RTX → TensorRT → CUDA → CPU | Compiled into the Linux x64 package. Needs CUDA/TensorRT runtimes; hardware validation is still outstanding. No Vulkan EP. |
-| Linux · arm64 | TensorRT RTX → TensorRT → CUDA → CPU | Same registration chain as Linux x64. Needs CUDA/TensorRT runtimes; hardware validation is still outstanding. No Vulkan EP. |
+| Platform              | Backends (priority order)                       | Status                                                                                                                          |
+| --------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| macOS · Apple Silicon | CoreML → WebGPU → CPU                           | Supported. CoreML is the primary path and has been exercised on Apple Silicon; WebGPU is experimental.                          |
+| macOS · Intel         | CoreML → WebGPU → CPU (when ORT is supplied)    | No pinned ORT rc.14 prebuilt for Intel macOS. Ship as CPU-only unless an external ORT build is provided through `ORT_LIB_PATH`. |
+| Windows · x64         | TensorRT RTX → TensorRT → CUDA → DirectML → CPU | Compiled into the Windows x64 package. GPU backends need matching drivers/runtimes; hardware validation is still outstanding.   |
+| Linux · x64           | TensorRT RTX → TensorRT → CUDA → CPU            | Compiled into the Linux x64 package. Needs CUDA/TensorRT runtimes; hardware validation is still outstanding. No Vulkan EP.      |
+| Linux · arm64         | TensorRT RTX → TensorRT → CUDA → CPU            | Same registration chain as Linux x64. Needs CUDA/TensorRT runtimes; hardware validation is still outstanding. No Vulkan EP.     |
 
 There is no Metal or Vulkan ONNX execution provider in the Revox chain. WebGPU
 uses Dawn and remains experimental upstream. CUDA and TensorRT builds need
